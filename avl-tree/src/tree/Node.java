@@ -21,6 +21,64 @@ public class Node {
     // delete element
     // optimize node
 
+    private static Node rotateRight(Node node){
+        Node leftSon = node.leftNode;
+        Node father = node;
+
+        father.leftNode = leftSon.rightNode;
+
+        leftSon.rightNode = father;
+        leftSon.rightHeight = father.rightHeight + 1;
+        leftSon.leftHeight = father.leftHeight - 1;
+        leftSon.height = Math.max(leftSon.leftHeight, leftSon.rightHeight);
+        leftSon.balanceFactor = leftSon.leftHeight - leftSon.rightHeight;
+
+        return leftSon;
+    }
+
+    private static Node rotateLeft(Node node){
+        Node rightSon = node.rightNode;
+        Node father = node;
+
+        father.rightNode = rightSon.leftNode;
+        rightSon.leftNode = father;
+
+        rightSon.leftHeight = father.leftHeight + 1;
+        rightSon.rightHeight = father.rightHeight - 1;
+        rightSon.height = Math.max(rightSon.leftHeight, rightSon.rightHeight);
+        rightSon.balanceFactor = rightSon.leftHeight - rightSon.rightHeight;
+
+        //father.leftHeight LEFT HEIGHT CONTINUA O MESMO NO PAI
+        if (father.rightNode != null) {
+            father.rightHeight = father.rightNode.height + 1;
+        } else {
+            father.rightHeight = 0;
+        }
+
+        father.height = Math.max(father.leftHeight, father.rightHeight);
+        father.balanceFactor = father.leftHeight - father.rightHeight;
+
+        return rightSon;
+    }
+
+    private static Node balance(Node node){
+        if (node.balanceFactor > 1) {
+//            if (node.leftNode.balanceFactor < 0) {
+//                rotateLeft(node);
+//            }
+            System.out.println("PENDENDO A ESQUERDA: Fator de balanceamento maior que 1: " + node.value);
+            node = rotateRight(node);
+        } else if (node.balanceFactor < -1) {
+//            if (node.leftNode.balanceFactor > 0) {
+//                rotateRight(node);
+//            }
+            System.out.println("PENDENDO A DIREITA: Fator de balanceamento menor que -1: " + node.value);
+            node = rotateLeft(node);
+        }
+
+        return node;
+    }
+
     public Node search(int value){
         if (value > this.value){
             if (rightNode == null) return null;
@@ -55,26 +113,7 @@ public class Node {
         node.height = Math.max(node.leftHeight, node.rightHeight);
         node.balanceFactor = node.leftHeight - node.rightHeight;
 
-        return node;
-    }
-
-    private Node rotateRight(Node node){
-       return null;
-    }
-
-    private Node rotateLeft(Node node){
-        return null;
-    }
-
-    private Node balance(Node node){
-        if (node.balanceFactor > 1) {
-            if (node.leftNode.balanceFactor < 1) {
-
-            }
-            rotateRight(node);
-        }
-
-        return node;
+        return balance(node);
     }
 
 //    public static boolean deleteElement(Node node, int value){
