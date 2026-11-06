@@ -26,12 +26,22 @@ public class Node {
         Node father = node;
 
         father.leftNode = leftSon.rightNode;
-
         leftSon.rightNode = father;
+
         leftSon.rightHeight = father.rightHeight + 1;
         leftSon.leftHeight = father.leftHeight - 1;
         leftSon.height = Math.max(leftSon.leftHeight, leftSon.rightHeight);
         leftSon.balanceFactor = leftSon.leftHeight - leftSon.rightHeight;
+
+        //father.rightHeight CONTINUA O MESMO NO PAI
+        if (father.leftNode != null) {
+            father.leftHeight = father.leftNode.height + 1;
+        } else {
+            father.leftHeight = 0;
+        }
+
+        father.height = Math.max(father.leftHeight, father.rightHeight);
+        father.balanceFactor = father.leftHeight - father.rightHeight;
 
         return leftSon;
     }
@@ -48,7 +58,7 @@ public class Node {
         rightSon.height = Math.max(rightSon.leftHeight, rightSon.rightHeight);
         rightSon.balanceFactor = rightSon.leftHeight - rightSon.rightHeight;
 
-        //father.leftHeight LEFT HEIGHT CONTINUA O MESMO NO PAI
+        //father.leftHeight CONTINUA O MESMO NO PAI
         if (father.rightNode != null) {
             father.rightHeight = father.rightNode.height + 1;
         } else {
@@ -63,16 +73,24 @@ public class Node {
 
     private static Node balance(Node node){
         if (node.balanceFactor > 1) {
-//            if (node.leftNode.balanceFactor < 0) {
-//                rotateLeft(node);
-//            }
             System.out.println("PENDENDO A ESQUERDA: Fator de balanceamento maior que 1: " + node.value);
+            if (node.leftNode != null) {
+                if (node.leftNode.balanceFactor < 0) {
+                    node = rotateLeft(node.leftNode);
+                    System.out.println("Rotacao dupla: Esquerda -> direita: " + node.value);
+                }
+            }
+
             node = rotateRight(node);
         } else if (node.balanceFactor < -1) {
-//            if (node.leftNode.balanceFactor > 0) {
-//                rotateRight(node);
-//            }
             System.out.println("PENDENDO A DIREITA: Fator de balanceamento menor que -1: " + node.value);
+            if (node.leftNode != null) {
+                if (node.leftNode.balanceFactor > 0) {
+                    System.out.println("Rotacao dupla: Direita -> esquerda: " + node.value);
+                    node = rotateRight(node.rightNode);
+                }
+            }
+
             node = rotateLeft(node);
         }
 
