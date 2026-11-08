@@ -161,7 +161,7 @@ public class Node {
                 node.rightNode = insert(node.rightNode, value);
             }
             node.rightHeight = node.rightNode.height + 1;
-        } else if (value < node.value){
+        } else {
             if (node.leftNode == null) {
                 node.leftNode = new Node(value);
             }
